@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tischliste · Gemeinsam essen",
+  title: "Dein Essensbuch",
   description: "Mittagessen und Frühstück erfassen. Alle Beiträge im Blick.",
   other: {
     "codex-preview": "development",

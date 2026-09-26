@@ -1,6 +1,6 @@
-# Tischliste
+# Dein Essensbuch
 
-**[Tischliste öffnen](https://danielbergmann-dev.github.io/Ausgabenbuch-/)**
+**[Dein Essensbuch öffnen](https://danielbergmann-dev.github.io/Ausgabenbuch-/)**
 
 Die GitHub-Pages-Adresse zeigt die Tischliste an. Die App und ihre Datenbank laufen weiterhin bei ChatGPT Sites. Die Web-App ist ohne Anmeldung erreichbar. Alle mit dem Link können die Mitarbeiterliste und Essenseinträge ansehen und bearbeiten. Dieses Repository enthält den Quellcode; die gespeicherten Daten liegen in der Sites-Datenbank.
 
