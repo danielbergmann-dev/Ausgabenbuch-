@@ -2,7 +2,7 @@
 
 **[Web-App öffnen: Tischliste](https://tischliste.tituzzz.chatgpt.site)**
 
-Die Web-App ist derzeit nur mit dem berechtigten ChatGPT-Konto erreichbar. Dieses Repository enthält den Quellcode; die gespeicherten Mitarbeiter und Essenseinträge liegen in der Sites-Datenbank.
+Die Web-App ist ohne Anmeldung erreichbar. Alle mit dem Link können die Mitarbeiterliste und Essenseinträge ansehen und bearbeiten. Dieses Repository enthält den Quellcode; die gespeicherten Daten liegen in der Sites-Datenbank.
 
 Responsive Essensliste mit dauerhafter Sites-D1-Datenbank.
 
@@ -12,9 +12,9 @@ Responsive Essensliste mit dauerhafter Sites-D1-Datenbank.
 - Monatliche Auswertung je Mitarbeiter: Mittwoch, Freitag und gesamt
 - Gesamtbetrag pro Mitarbeiter über alle Monate
 - Mitarbeiter hinzufügen und archivieren; historische Einträge bleiben erhalten
-- Private Veröffentlichung über ChatGPT Sites
+- Öffentliche Veröffentlichung über ChatGPT Sites
 
-Personennamen und Essenseinträge werden nur in der Datenbank gespeichert, nicht in diesem öffentlichen Repository. Auf jedem Gerät denselben berechtigten ChatGPT-Account verwenden. Die Daten benötigen eine Internetverbindung; fehlgeschlagene Änderungen werden als Fehler angezeigt.
+Personennamen und Essenseinträge werden nur in der Datenbank gespeichert, nicht in diesem öffentlichen Repository. Die Daten benötigen eine Internetverbindung; fehlgeschlagene Änderungen werden als Fehler angezeigt.
 
 ## Entwicklung
 
