@@ -1,8 +1,8 @@
 # Tischliste
 
-**[Web-App öffnen: Tischliste](https://tischliste.tituzzz.chatgpt.site)**
+**[Tischliste öffnen](https://danielbergmann-dev.github.io/Ausgabenbuch-/)**
 
-Die Web-App ist ohne Anmeldung erreichbar. Alle mit dem Link können die Mitarbeiterliste und Essenseinträge ansehen und bearbeiten. Dieses Repository enthält den Quellcode; die gespeicherten Daten liegen in der Sites-Datenbank.
+Die GitHub-Pages-Adresse zeigt die Tischliste an. Die App und ihre Datenbank laufen weiterhin bei ChatGPT Sites. Die Web-App ist ohne Anmeldung erreichbar. Alle mit dem Link können die Mitarbeiterliste und Essenseinträge ansehen und bearbeiten. Dieses Repository enthält den Quellcode; die gespeicherten Daten liegen in der Sites-Datenbank.
 
 Responsive Essensliste mit dauerhafter Sites-D1-Datenbank.
 
