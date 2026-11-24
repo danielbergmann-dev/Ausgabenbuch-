@@ -3,7 +3,7 @@ import {useRef,useState} from 'react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {account,parseAmount,type Payment} from '@/lib/payments';
 const euro=(n:number)=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n/100);
-type Props={people:{id:string;name:string;active:number}[];meals:{personId:string;cents:number}[];payments:Payment[];loaded:boolean;busy:boolean;reload:()=>Promise<unknown>};
+type Props={people:{id:string;name:string;active:number}[];meals:{personId:string;cents:number;kind:string;date:string}[];payments:Payment[];loaded:boolean;busy:boolean;reload:()=>Promise<unknown>};
 export function Payments({people,meals,payments,loaded,busy,reload}:Props){
   const [filter,setFilter]=useState('all');
   const [personId,setPersonId]=useState<string|null>(null);
@@ -37,13 +37,19 @@ export function Payments({people,meals,payments,loaded,busy,reload}:Props){
     }
   }
   return <section className="panel payments-panel">
-    <div className="sectionhead"><div><p className="eyebrow">ZAHLUNGEN · ALLE MONATE</p><h2>Wer hat noch etwas offen?</h2></div></div>
-    <div className="payment-overview"><div><span>Insgesamt offen</span><strong>{euro(rows.reduce((n,p)=>n+Math.max(0,p.balance),0))}</strong></div><div className="payment-filter" aria-label="Mitarbeiter filtern">{[['all','Alle'],['open','Noch offen']].map(([value,label])=><button key={value} aria-pressed={filter===value} onClick={()=>setFilter(value)}>{label}</button>)}</div></div>
+    <div className="sectionhead"><div><p className="eyebrow">ZAHLUNGEN · ALLE MONATE</p><h2>Mitarbeiter &amp; Kassen</h2></div></div>
+    <p className="cash-explanation">Frühstück und Mittagessen: Gesamtkosten aller eingetragenen Essen über alle Monate. Zahlungen sind im offenen Gesamtbetrag abgezogen, noch nicht getrennt nach Kasse.</p><div className="payment-overview"><div><span>Insgesamt offen</span><strong>{euro(rows.reduce((n,p)=>n+Math.max(0,p.balance),0))}</strong></div><div className="payment-filter" aria-label="Mitarbeiter filtern">{[['all','Alle'],['open','Noch offen']].map(([value,label])=><button key={value} aria-pressed={filter===value} onClick={()=>setFilter(value)}>{label}</button>)}</div></div>
     {message&&<p className="payment-success" role="status">✓ {message}</p>}
     {!loaded?<p className="empty">Zahlungen werden geladen …</p>:!visible.length?<p className="empty">{filter==='open'?'Alles ausgeglichen – keine offenen Beträge.':'Noch keine Mitarbeiter angelegt.'}</p>:visible.map(p=>{
       const history=payments.filter(x=>x.personId===p.id);
+      const personalMeals=meals.filter(m=>m.personId===p.id);
+      const breakfast=personalMeals.filter(m=>m.kind==='fri').reduce((n,m)=>n+m.cents,0);
+      const lunch=personalMeals.filter(m=>m.kind==='wed').reduce((n,m)=>n+m.cents,0);
+      const months=Array.from(new Set(personalMeals.map(m=>m.date.slice(0,7)))).sort().reverse();
       return <article className="payment-card" key={p.id}>
         <div className="payment-card-head"><h3>{p.name}{!p.active&&<small>Archiviert</small>}</h3><div className={'balance '+(p.balance<=0?'settled':'')}><strong>{euro(Math.abs(p.balance))}</strong><span>{p.balance>0?'offen':p.balance<0?'Guthaben':p.paid>0?'✓ Bezahlt':'Ausgeglichen'}</span></div></div>
+        <div className="cash-totals" aria-label={'Gesamtkosten für '+p.name}><div className="cash-breakfast"><span>Frühstück gesamt</span><strong>{euro(breakfast)}</strong></div><div className="cash-lunch"><span>Mittagessen gesamt</span><strong>{euro(lunch)}</strong></div></div>
+        {months.length>0&&<details className="cash-months"><summary>Monate im Überblick ({months.length})</summary><div className="cash-table-wrap"><table><caption className="sr-only">Essenskosten je Monat für {p.name}</caption><thead><tr><th>Monat</th><th>Frühstück</th><th>Mittagessen</th><th>Gesamt</th></tr></thead><tbody>{months.map(month=>{const entries=personalMeals.filter(m=>m.date.startsWith(month));const b=entries.filter(m=>m.kind==='fri').reduce((n,m)=>n+m.cents,0);const l=entries.filter(m=>m.kind==='wed').reduce((n,m)=>n+m.cents,0);return <tr key={month}><th scope="row">{new Date(month+'-01T12:00:00Z').toLocaleDateString('de-DE',{month:'short',year:'numeric',timeZone:'Europe/Berlin'})}</th><td>{euro(b)}</td><td>{euro(l)}</td><td>{euro(b+l)}</td></tr>})}</tbody><tfoot><tr><th scope="row">Alle Monate</th><td>{euro(breakfast)}</td><td>{euro(lunch)}</td><td>{euro(p.total)}</td></tr></tfoot></table></div></details>}
         <div className="payment-card-action"><p>Essen {euro(p.total)} · Bezahlt {euro(p.paid)}</p>{p.balance>0&&<button className="primary" disabled={busy||saving} onClick={()=>{requestId.current=crypto.randomUUID();setAmount('');setError('');setPersonId(p.id)}}>Zahlung erfassen</button>}</div>
         {history.length>0&&<details className="payment-history"><summary>Zahlungsverlauf ({history.length})</summary><ul>{history.map(x=><li key={x.id}><div><strong>{euro(x.cents)}</strong><span>{new Date(x.createdAt).toLocaleString('de-DE',{timeZone:'Europe/Berlin',dateStyle:'short',timeStyle:'short'})}{x.cancelledAt?' · Storniert':''}</span></div>{!x.cancelledAt&&<button className="payment-secondary" disabled={saving||busy} onClick={()=>{setError('');setCancel(x)}}>Rückgängig</button>}</li>)}</ul></details>}
       </article>;
