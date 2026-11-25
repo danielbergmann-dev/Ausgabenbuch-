@@ -12,10 +12,10 @@ else if(body.action==='payment'){
   const existing=await d.prepare('SELECT person_id,cents FROM payments WHERE id=?').bind(id).first();
   if(existing){if(existing.person_id!==personId||existing.cents!==cents)return fail('Diese Zahlung wurde bereits mit anderen Angaben erfasst.',409);return Response.json({ok:true});}
   const balanceSQL='COALESCE((SELECT SUM(cents) FROM meals WHERE person_id=?),0)-COALESCE((SELECT SUM(cents) FROM payments WHERE person_id=? AND cancelled_at IS NULL),0)';
-  const result=await d.prepare(`INSERT INTO payments(id,person_id,cents,created_at) SELECT ?,?,?,? WHERE EXISTS(SELECT 1 FROM people WHERE id=?) AND ? <= (${balanceSQL}) AND (? IS NULL OR ? = (${balanceSQL})) ON CONFLICT(id) DO NOTHING`).bind(id,personId,cents,new Date().toISOString(),personId,cents,personId,personId,expectedBalance??null,expectedBalance??null,personId,personId).run();
+  const result=await d.prepare(`INSERT INTO payments(id,person_id,cents,created_at) SELECT ?,?,?,? WHERE EXISTS(SELECT 1 FROM people WHERE id=?) AND (? IS NULL OR ? = (${balanceSQL})) ON CONFLICT(id) DO NOTHING`).bind(id,personId,cents,new Date().toISOString(),personId,expectedBalance??null,expectedBalance??null,personId,personId).run();
   if(!result.meta.changes){
     const duplicate=await d.prepare('SELECT person_id,cents FROM payments WHERE id=?').bind(id).first();
-    if(!duplicate||duplicate.person_id!==personId||duplicate.cents!==cents)return fail('Der offene Betrag hat sich geändert oder die Zahlung ist zu hoch. Bitte schließen und die Übersicht neu laden.',409);
+    if(!duplicate||duplicate.person_id!==personId||duplicate.cents!==cents)return fail('Der offene Betrag hat sich geändert oder die Person wurde nicht gefunden. Bitte schließen und die Übersicht neu laden.',409);
   }
 }
 else if(body.action==='cancelPayment'){
